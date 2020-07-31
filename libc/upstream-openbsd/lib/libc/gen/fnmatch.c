@@ -100,7 +100,11 @@ classmatch(const char *pattern, char test, int foldcase, const char **ep)
 {
 	const char * const mismatch = pattern;
 	const char *colon;
+<<<<<<< HEAD
 	const struct cclass *cc;
+=======
+	struct cclass *cc;
+>>>>>>> 38ab515cf (Sync with upstream OpenBSD.)
 	int rval = RANGE_NOMATCH;
 	size_t len;
 

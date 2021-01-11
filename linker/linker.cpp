@@ -3276,12 +3276,14 @@ bool soinfo::prelink_image() {
     }
   }
 
-  // Before M release, linker was using basename in place of soname. In the case when DT_SONAME is
-  // absent some apps stop working because they can't find DT_NEEDED library by soname. This
-  // workaround should keep them working. (Applies only for apps targeting sdk version < M.) Make
-  // an exception for the main executable, which does not need to have DT_SONAME. The linker has an
-  // DT_SONAME but the soname_ field is initialized later on.
-  if (soname_.empty() && this != solist_get_somain() && !relocating_linker &&
+  // Before M release linker was using basename in place of soname.
+  // In the case when dt_soname is absent some apps stop working
+  // because they can't find dt_needed library by soname.
+  // This workaround should keep them working. (Applies only
+  // for apps targeting sdk version < M.) Make an exception for
+  // the main executable and linker; they do not need to have dt_soname.
+  // TODO: >= O the linker doesn't need this workaround.
+  if (soname_.empty() && this != solist_get_somain() && (flags_ & FLAG_LINKER) == 0 &&
       get_application_target_sdk_version() < 23) {
     soname_ = basename(realpath_.c_str());
     DL_WARN_documented_change(23, "missing-soname-enforced-for-api-level-23",
